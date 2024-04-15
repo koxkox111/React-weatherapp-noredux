@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
 
-function App() {
+import { City } from "./Components/City/City";
+import { Weather } from "./Components/Weather/Weather";
+import { Location } from "./Components/Location/Location";
+import { lightTheme, darkTheme, Switch } from "./Components/Theme/Theme";
+
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+
+export const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: ${(props) => props.theme.backgroundColor};
+    color: ${(props) => props.theme.textColor};
+    transition: all 1s ease;
+  }
+`;
+
+export function App() {
+  const [theme, setTheme] = useState("light");
+  const isDarkTheme = theme === "dark";
+  const toggleTheme = () => {
+    setTheme(isDarkTheme ? "light" : "dark");
+  };
+  const [city, setCity] = useState("");
+  const handleCity = (cityArg) => {
+    setCity(cityArg);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+      <GlobalStyle />
+      <City handleCityChange={handleCity} />
+      <div>
+        <Switch toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
+        <Location handleCityChange={handleCity} />
+      </div>
+      <Weather currentCity={city} />
+    </ThemeProvider>
   );
 }
-
-export default App;
